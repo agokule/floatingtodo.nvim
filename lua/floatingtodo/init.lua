@@ -16,9 +16,11 @@ local win = nil
 --- @field global_file string
 --- @field autosave boolean Whether to save the file when leaving the todo list
 --- @field height number
---- @field position "center" | "topleft" | "topright" | "bottomright" | "bottomleft"
 --- @field width number
+--- @field position "center" | "topleft" | "topright" | "bottomright" | "bottomleft"
 --- @field border 'none'|'single'|'double'|'rounded'|'solid'|'shadow'|string[]
+--- Whether to automatically insert a markdown todo item when on a new line
+--- @field mappings boolean
 
 --- @type FloatingTodoOpts
 local default_opts = {
@@ -29,6 +31,7 @@ local default_opts = {
 	width = 0.8,
 	height = 0.8,
 	position = "center",
+	mappings = true,
 }
 
 local function calculate_position(position)
@@ -131,6 +134,21 @@ local function open_floating_file(opts, file)
 			end
 		end,
 	})
+
+	if not opts.mappings then
+		return
+	end
+
+	local newItem = '- [ ] '
+	local keymap_opts = { nowait = true, silent = true, noremap = true }
+
+	vim.api.nvim_buf_set_keymap(buf, 'n', '<a-o>', 'o', keymap_opts)
+	vim.api.nvim_buf_set_keymap(buf, 'n', '<a-s-o>', 'O', keymap_opts)
+
+	vim.api.nvim_buf_set_keymap(buf, 'n', 'o', 'o' .. newItem, keymap_opts)
+	vim.api.nvim_buf_set_keymap(buf, 'n', 'O', 'O' .. newItem, keymap_opts)
+
+	vim.api.nvim_buf_set_keymap(buf, 'i', '<enter>', '<enter>' .. newItem, keymap_opts)
 end
 
 --- @param opts FloatingTodoOpts
