@@ -20,13 +20,6 @@ local default_opts = {
 	position = "center",
 }
 
-local function expand_path(path)
-	if path:sub(1, 1) == "~" then
-		return os.getenv("HOME") .. path:sub(2)
-	end
-	return path
-end
-
 local function calculate_position(position)
 	local posx, posy = 0.5, 0.5
 
@@ -77,7 +70,13 @@ local function open_floating_file(opts)
 		return
 	end
 
-	local expanded_path = expand_path(opts.target_file)
+	local expanded_path
+
+	if (file == "local") then
+		expanded_path = vim.fn.expand(opts.target_file)
+	else
+		expanded_path = vim.fn.expand(opts.global_file)
+	end
 
 	if vim.fn.filereadable(expanded_path) == 0 then
 		vim.notify("todo file does not exist at directory: " .. expanded_path, vim.log.levels.ERROR)
