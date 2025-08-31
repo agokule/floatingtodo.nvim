@@ -13,7 +13,8 @@ local win = nil
 
 --- @type FloatingTodoOpts
 local default_opts = {
-	target_file = "~/notes/todo.md",
+	target_file = "floatingtodo.md",
+	global_file = vim.fn.stdpath('data') .. '/floatingtodo.md',
 	autosave = true,
 	border = "single",
 	width = 0.8,
@@ -45,6 +46,7 @@ local function calculate_position(position)
 end
 
 --- @param opts FloatingTodoOpts
+--- @return vim.api.keyset.win_config # defining the window configuration.
 local function win_config(opts)
 	local width = math.min(math.floor(vim.o.columns * opts.width), 64)
 	local height = math.floor(vim.o.lines * opts.height)
@@ -64,8 +66,9 @@ local function win_config(opts)
 	}
 end
 
-local function open_floating_file(opts)
 --- @param opts FloatingTodoOpts
+--- @param file "global" | "local"
+local function open_floating_file(opts, file)
 	if win ~= nil and vim.api.nvim_win_is_valid(win) then
 		vim.api.nvim_set_current_win(win)
 		return
@@ -80,8 +83,7 @@ local function open_floating_file(opts)
 	end
 
 	if vim.fn.filereadable(expanded_path) == 0 then
-		vim.notify("todo file does not exist at directory: " .. expanded_path, vim.log.levels.ERROR)
-		return
+		vim.fn.writefile({}, expanded_path, 's')
 	end
 
 	local buf = vim.fn.bufnr(expanded_path, true)
@@ -120,8 +122,11 @@ end
 local function setup_user_commands(opts)
 	opts = vim.tbl_deep_extend("force", default_opts, opts)
 
-	vim.api.nvim_create_user_command("Td", function()
-		open_floating_file(opts)
+	vim.api.nvim_create_user_command("TodoLocal", function()
+		open_floating_file(opts, "local")
+	end, {})
+	vim.api.nvim_create_user_command("TodoGlobal", function()
+		open_floating_file(opts, "global")
 	end, {})
 end
 
