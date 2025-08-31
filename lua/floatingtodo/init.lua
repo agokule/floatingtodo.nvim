@@ -2,6 +2,16 @@ local M = {}
 
 local win = nil
 
+--- @class FloatingTodoOpts
+--- @field target_file string The filename of the local todo list
+--- @field global_file string The filename of the global todo list
+--- @field autosave boolean Whether to save the file when leaving the todo list
+--- @field height number
+--- @field position "center" | "topleft" | "topright" | "bottomright" | "bottomleft"
+--- @field width number
+--- @field border 'none'|'single'|'double'|'rounded'|'solid'|'shadow'|string[]
+
+--- @type FloatingTodoOpts
 local default_opts = {
 	target_file = "~/notes/todo.md",
 	border = "single",
@@ -40,6 +50,7 @@ local function calculate_position(position)
 	return posx, posy
 end
 
+--- @param opts FloatingTodoOpts
 local function win_config(opts)
 	local width = math.min(math.floor(vim.o.columns * opts.width), 64)
 	local height = math.floor(vim.o.lines * opts.height)
@@ -60,6 +71,7 @@ local function win_config(opts)
 end
 
 local function open_floating_file(opts)
+--- @param opts FloatingTodoOpts
 	if win ~= nil and vim.api.nvim_win_is_valid(win) then
 		vim.api.nvim_set_current_win(win)
 		return
@@ -97,6 +109,7 @@ local function open_floating_file(opts)
 	})
 end
 
+--- @param opts FloatingTodoOpts
 local function setup_user_commands(opts)
 	opts = vim.tbl_deep_extend("force", default_opts, opts)
 
@@ -105,6 +118,7 @@ local function setup_user_commands(opts)
 	end, {})
 end
 
+--- @param opts FloatingTodoOpts | any
 M.setup = function(opts)
 	setup_user_commands(opts)
 end
