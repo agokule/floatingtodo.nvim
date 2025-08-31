@@ -13,7 +13,7 @@ local win = nil
 
 --- @type FloatingTodoOpts
 local default_opts = {
-	target_file = "floatingtodo.md",
+	target_file = ".floatingtodo.md",
 	global_file = vim.fn.stdpath('data') .. '/floatingtodo.md',
 	autosave = true,
 	border = "single",
