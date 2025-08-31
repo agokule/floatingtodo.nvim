@@ -3,8 +3,17 @@ local M = {}
 local win = nil
 
 --- @class FloatingTodoOpts
---- @field target_file string The filename of the local todo list
---- @field global_file string The filename of the global todo list
+--- The filename of the local todo list.
+---
+--- The function form takes in the file of the current buffer
+--- and the current directory from vim.fn.getcwd()
+---
+--- This will be passed into vim.fn.expand()
+--- @field target_file string|fun(file: string, dir: string):string
+--- The filename of the global todo list
+---
+--- This will be passed into vim.fn.expand()
+--- @field global_file string
 --- @field autosave boolean Whether to save the file when leaving the todo list
 --- @field height number
 --- @field position "center" | "topleft" | "topright" | "bottomright" | "bottomleft"
@@ -77,7 +86,13 @@ local function open_floating_file(opts, file)
 	local expanded_path
 
 	if (file == "local") then
-		expanded_path = vim.fn.expand(opts.target_file)
+		if (type(opts.target_file) == 'function') then
+			local current_file = vim.api.nvim_buf_get_name(vim.api.nvim_win_get_buf(0))
+			local current_dir = vim.fn.getcwd()
+			expanded_path = vim.fn.expand(opts.target_file(current_file, current_dir))
+		else
+			expanded_path = vim.fn.expand(opts.target_file --[[@as string]])
+		end
 	else
 		expanded_path = vim.fn.expand(opts.global_file)
 	end
