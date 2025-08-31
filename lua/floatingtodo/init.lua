@@ -14,6 +14,7 @@ local win = nil
 --- @type FloatingTodoOpts
 local default_opts = {
 	target_file = "~/notes/todo.md",
+	autosave = true,
 	border = "single",
 	width = 0.8,
 	height = 0.8,
@@ -99,7 +100,14 @@ local function open_floating_file(opts)
 		silent = true,
 		callback = function()
 			if vim.api.nvim_get_option_value("modified", { buf = buf }) then
-				vim.notify("save your changes pls", vim.log.levels.WARN)
+				if opts.autosave then
+					vim.api.nvim_buf_call(buf, function()
+						vim.cmd("write")
+					end)
+					vim.api.nvim_win_close(0, true)
+				else
+					vim.notify("Save your changes before closing.", vim.log.levels.WARN)
+				end
 			else
 				vim.api.nvim_win_close(0, true)
 				win = nil
