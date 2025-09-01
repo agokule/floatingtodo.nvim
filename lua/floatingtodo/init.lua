@@ -23,15 +23,26 @@ local win = nil
 --- @field mappings boolean
 
 --- @type FloatingTodoOpts
-local default_opts = {
-	target_file = ".floatingtodo.md",
-	global_file = vim.fn.stdpath('data') .. '/floatingtodo.md',
-	autosave = true,
-	border = "single",
-	width = 0.8,
-	height = 0.8,
-	position = "center",
-	mappings = true,
+local default_opts ={
+    -- the file used for :TodoLocal
+    --
+    -- can also be a function that takes in the current file
+    -- and process directory and returns the file
+    target_file = ".floatingtodo.md",
+    -- the file used for :TodoGlobal
+    global_file = vim.fn.stdpath('data') .. '/floatingtodo.md',
+    -- whether to autosave when closing
+    autosave = true,
+    -- can be anything mentioned in :h 'winborder'
+    border = "single",
+    -- width of window in % of screen size
+    width = 0.8,
+    -- height of window in % of screen size
+    height = 0.8,
+    -- can also be topleft, topright, bottomleft, bottomright
+    position = "center",
+    -- whether to set the mappings to auto add tasks and toggle them
+    mappings = true
 }
 
 local function calculate_position(position)
