@@ -2,6 +2,12 @@
 
 A quick todo list that you can quickly open for your current project or globally.
 
+## How it works
+
+Running `:TodoLocal` will create a todolist file in your project directory and open a floating window of it.
+
+Running `:TodoGlobal` is the same but the file is available globally across all projects
+
 ## Install
 
 Lazy.nvim installation:
