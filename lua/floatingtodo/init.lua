@@ -15,8 +15,8 @@ local win = nil
 --- This will be passed into vim.fn.expand()
 --- @field global_file string
 --- @field autosave boolean Whether to save the file when leaving the todo list
---- @field height number
---- @field width number
+--- @field height number Height in % of screen size
+--- @field width number Width in % of screen size
 --- @field position "center" | "topleft" | "topright" | "bottomright" | "bottomleft"
 --- @field border 'none'|'single'|'double'|'rounded'|'solid'|'shadow'|string[]
 --- Whether to automatically insert a markdown todo item when on a new line
