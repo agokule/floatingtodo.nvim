@@ -180,7 +180,7 @@ local function open_floating_file(opts, file)
 				return
 			end
 
-			vim.cmd('norm 0f[ci[' .. filler_char)
+			vim.cmd('norm 0f[cf][' .. filler_char .. ']')
 			vim.fn.setpos('.', cursor)
 			vim.cmd('norm j')
 		end
