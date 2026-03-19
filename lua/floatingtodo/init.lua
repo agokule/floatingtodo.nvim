@@ -161,30 +161,28 @@ local function open_floating_file(opts, file)
 
 	vim.api.nvim_buf_set_keymap(buf, 'i', '<enter>', '<enter>' .. newItem, keymap_opts)
 
-	vim.api.nvim_buf_set_keymap(buf, 'n', '<a-enter>', '', {
-		noremap = true,
-		nowait = true,
-		silent = true,
-		callback = function ()
-			local cursor = vim.fn.getcurpos()
+	keymap_opts.callback = function ()
+		local cursor = vim.fn.getcurpos()
 
-			local lineNr = cursor[2]
-			local line = vim.fn.getbufoneline(buf, lineNr)
+		local lineNr = cursor[2]
+		local line = vim.fn.getbufoneline(buf, lineNr)
 
-			local filler_char
-			if string.sub(line, 1, 6) == newItem then
-				filler_char = 'x'
-			elseif string.sub(line, 1, 3) == '- [' then
-				filler_char = ' '
-			else
-				return
-			end
-
-			vim.cmd('norm 0f[cf][' .. filler_char .. ']')
-			vim.fn.setpos('.', cursor)
-			vim.cmd('norm j')
+		local filler_char
+		if string.sub(line, 1, 6) == newItem then
+			filler_char = 'x'
+		elseif string.sub(line, 1, 3) == '- [' then
+			filler_char = ' '
+		else
+			return
 		end
-	})
+
+		vim.cmd('norm 0f[cf][' .. filler_char .. ']')
+		vim.fn.setpos('.', cursor)
+		vim.cmd('norm j')
+	end
+
+	vim.api.nvim_buf_set_keymap(buf, 'n', '<a-enter>', '', keymap_opts)
+	vim.api.nvim_buf_set_keymap(buf, 'n', '<c-enter>', '', keymap_opts)
 end
 
 --- @param opts FloatingTodoOpts
